@@ -1,15 +1,17 @@
--- This file has been generated from package.yaml by hpack version 0.17.1.
+-- This file has been generated from package.yaml by hpack version 0.20.0.
 --
 -- see: https://github.com/sol/hpack
+--
+-- hash: 8394961c877bd8edddf410f5929473588ab6beea3f865fddeeeaaf9659f3e502
 
 name:           crypto-bot-hs
-version:        0.1.0.0
-description:    Please see the README on Github at <https://github.com/githubuser/crypto-bot-hs#readme>
-homepage:       https://github.com/githubuser/crypto-bot-hs#readme
-bug-reports:    https://github.com/githubuser/crypto-bot-hs/issues
-author:         Author name here
-maintainer:     example@example.com
-copyright:      2018 Author name here
+version:        0.1.0
+description:    Please see the README on Github at <https://github.com/epicallan/crypto-bot-hs#readme>
+homepage:       https://github.com/epicallan/crypto-bot-hs#readme
+bug-reports:    https://github.com/epicallan/crypto-bot-hs/issues
+author:         Lukwago Allan
+maintainer:     epicallan.al@gmail.com
+copyright:      2018 Lukwago Allan
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
@@ -21,15 +23,17 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/crypto-bot-hs
+  location: https://github.com/epicallan/crypto-bot-hs
 
 library
   hs-source-dirs:
       src
   build-depends:
-      base >= 4.7 && < 5
+      base >=4.7 && <5
   exposed-modules:
       Lib
+  other-modules:
+      Paths_crypto_bot_hs
   default-language: Haskell2010
 
 executable crypto-bot-hs-exe
@@ -38,8 +42,12 @@ executable crypto-bot-hs-exe
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >= 4.7 && < 5
+      base >=4.7 && <5
+    , protolude >= 0.2.1
     , crypto-bot-hs
+  default-extensions: OverloadedStrings NoImplicitPrelude
+  other-modules:
+      Paths_crypto_bot_hs
   default-language: Haskell2010
 
 test-suite crypto-bot-hs-test
@@ -49,6 +57,10 @@ test-suite crypto-bot-hs-test
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >= 4.7 && < 5
+      base >=4.7 && <5
+    , protolude >= 0.2.1
     , crypto-bot-hs
+  default-extensions: OverloadedStrings NoImplicitPrelude
+  other-modules:
+      Paths_crypto_bot_hs
   default-language: Haskell2010
