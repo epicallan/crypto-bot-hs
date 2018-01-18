@@ -1,5 +1,8 @@
 
-module TA.RSI (pairUp) where
+module TA.RSI (
+        averageGain
+    ,   averageLoss
+    ) where
 
 import           Data.Maybe
 import           Protolude
@@ -8,7 +11,7 @@ import           Protolude
 type Period = Int
 data AverageType = Gain | Loss deriving (Ord, Eq, Show)
 
-pairUp :: Fractional a => [a] -> Maybe [(a,a)]
+pairUp :: Num a => [a] -> Maybe [(a,a)]
 pairUp []        = Just []
 pairUp [x]       = Nothing
 pairUp (x:x':xs) =  (:) <$> Just (x,x') <*> pairUp xs

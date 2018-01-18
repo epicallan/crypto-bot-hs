@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 0e6a4f836044f9eec8bc9045084d05c7d6ccae0c2257986cb2767fa9b4575766
+-- hash: 3f5d9e388dbfd61b740a5d4c015cbdab6a8f060c3abee60624ff20471b26f02c
 
 name:           crypto-bot-hs
 version:        0.1.0
@@ -61,8 +61,10 @@ test-suite crypto-bot-hs-test
   default-extensions: OverloadedStrings NoImplicitPrelude
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      QuickCheck
+    , base >=4.7 && <5
     , crypto-bot-hs
+    , hspec
     , protolude >=0.2
   other-modules:
       Paths_crypto_bot_hs

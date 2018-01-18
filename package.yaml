@@ -49,3 +49,5 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - crypto-bot-hs
+    - hspec
+    - QuickCheck
