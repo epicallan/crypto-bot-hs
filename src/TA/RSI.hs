@@ -2,6 +2,10 @@
 module TA.RSI (
         averageGain
     ,   averageLoss
+    ,   firstAverage
+    ,   pairDiffs
+    ,   foldAverages
+    ,   AverageType(..)
     ) where
 
 import           Data.Maybe
@@ -19,25 +23,26 @@ pairUp (x:x':xs) =  (:) <$> Just (x,x') <*> pairUp xs
 
 pairDiff :: (Fractional a, Ord a)  => AverageType -> (a, a) -> a
 pairDiff avType (x, y)
-    | avType == Gain && diff > 0 = diff
-    | avType == Loss && diff < 0 = diff * (- 1)
+    | avType == Gain && diff' > 0 = diff'
+    | avType == Loss && diff' < 0 = diff' * (- 1)
     | otherwise = 0
-    where diff = y - x
+    where diff' = y - x
 
-sumPairs :: (Fractional a, Ord a) => AverageType -> Maybe [(a, a)] -> Maybe a
-sumPairs avType pairs = case pairs of
-    Just xs -> Just $ sumOfPairs xs
+pairDiffs :: (Fractional a, Ord a) => AverageType -> Maybe [(a, a)] -> Maybe [a]
+pairDiffs avType pairs = case pairs of
+    Just xs -> Just $ fmap (pairDiff avType) xs
     Nothing -> Nothing
-    where
-        sumOfPairs = foldr (\pair acc -> acc + pairDiff avType pair) 0
-
 
 -- for getting first averages & losses
-firstAverage :: (Fractional a, Ord a) => AverageType -> Int -> Maybe [(a, a)] -> Maybe a
-firstAverage avType period pairs = div'' <$> totalGains
+firstAverage :: (Fractional a, Ord a) => AverageType -> Period -> Maybe [(a, a)] -> Maybe a
+firstAverage avType period pairs = div'' <$> diffsTotal
     where
-        totalGains = sumPairs avType $ fmap (take period) pairs
         div'' = flip (/) $ fromIntegral period
+         -- we only want to deal with a few pairs. 7 pairs will lead to more than 7 diffs
+        diffs = pairDiffs avType $ fmap (take period) pairs
+        -- ultimately we want to take from the diffs themeselves
+        diffsTotal = sum . take period <$> diffs
+
 
 
 foldAverages :: (Fractional a, Ord a) => AverageType -> Period -> a ->[(a, a)] -> a
