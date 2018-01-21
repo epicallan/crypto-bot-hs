@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 3f5d9e388dbfd61b740a5d4c015cbdab6a8f060c3abee60624ff20471b26f02c
+-- hash: d4a4492abdefbb64a5f8367b9d00347f8bc16c19ac6ff62052fd227735cf09b0
 
 name:           crypto-bot-hs
 version:        0.1.0
@@ -35,6 +35,8 @@ library
   exposed-modules:
       Lib
       TA.RSI
+      Utils.Alert
+      Utils.Stats
   other-modules:
       Paths_crypto_bot_hs
   default-language: Haskell2010
