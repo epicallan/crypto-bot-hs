@@ -1,6 +1,7 @@
 module Utils.Stats (
         pricesAtInterval
     ,   baseStats
+    ,   roundToNearest
     ,   BasicStats(..)
 ) where
 
@@ -49,8 +50,12 @@ slope' y =
         (_, beta) = linearRegression xs ys
     in beta
 
+roundToNearest :: Int -> Double -> Double
+roundToNearest n x = fromIntegral (round (x * 10^n)) / 10^n
+
 baseStats :: [Double] -> Maybe BasicStats
 baseStats [] = Nothing
 baseStats x  =
-    let last' = L.last x
-    in Just $ BasicStats (mean' x)  (std' x) (slope' x) last'
+    let last'   = L.last x
+        roundTo' = roundToNearest 2
+    in Just $ BasicStats (roundTo' $ mean' x)  (roundTo' $ std' x) (roundTo' $ slope' x) last'

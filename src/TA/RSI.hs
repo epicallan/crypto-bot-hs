@@ -10,24 +10,25 @@ module TA.RSI (
     ) where
 import           Data.Maybe
 import           Protolude
+import           Utils.Stats (roundToNearest)
 
 
 type Period = Int
 data AverageType = Gain | Loss deriving (Ord, Eq, Show)
-type Diffs a = Maybe [a]
+type Diffs = Maybe [Double]
 
-diffs :: Num a => [a] -> Diffs a
+diffs :: [Double] -> Diffs
 diffs []        = Just []
 diffs [_]       = Just []
 diffs (x:x':xs) = (:) <$> Just (x' - x) <*> diffs (x' : xs)
 
-diffsByType :: (RealFrac a) => AverageType -> Diffs a -> Diffs a
+diffsByType :: AverageType -> Diffs -> Diffs
 diffsByType avType changes =
     case changes of
         Just xs -> Just $ diffByType avType  <$> xs
         Nothing -> Nothing
     where
-        diffByType :: (RealFrac a) => AverageType -> a -> a
+        diffByType :: AverageType -> Double -> Double
         diffByType avType' change
             | avType' == Gain && change > 0 = change
             | avType' == Loss && change < 0 = change * (- 1)
@@ -35,7 +36,7 @@ diffsByType avType changes =
 
 
 -- for getting first averages & losses
-firstAverage ::(RealFrac a) => AverageType -> Period -> [a] -> Maybe a
+firstAverage :: AverageType -> Period -> [Double] -> Maybe Double
 firstAverage avType period prices = div'' <$> diffsTotal
     where
         div'' = flip (/) $ fromIntegral period
@@ -46,12 +47,12 @@ firstAverage avType period prices = div'' <$> diffsTotal
 
 
 
-foldAverages :: (RealFrac a) => Period -> a -> [a] -> a
+foldAverages :: Period -> Double -> [Double] -> Double
 foldAverages period = foldr' (\change acc -> (acc * (period' - 1) + change) / period')
         where period' = fromIntegral period
 
 
-aggregateAverages :: (RealFrac a) => AverageType -> Period -> [a] -> Maybe a
+aggregateAverages :: AverageType -> Period -> [Double] -> Maybe Double
 aggregateAverages avType period values =
     let initialAverage = firstAverage avType period values
         allDiffs       = diffsByType avType $ diffs values
@@ -60,22 +61,22 @@ aggregateAverages avType period values =
         Just avg -> foldAverages period avg . reverse <$> requiredDiffs
         Nothing  -> Nothing
 
-averageGain :: (RealFrac a) => Period -> [a] -> Maybe a
+averageGain :: Period -> [Double] -> Maybe Double
 averageGain = aggregateAverages Gain
 
-averageLoss :: (RealFrac a) => Period -> [a] -> Maybe a
+averageLoss :: Period -> [Double] -> Maybe Double
 averageLoss = aggregateAverages Loss
 
-rs :: (RealFrac a) => Period -> [a] -> Maybe a
+rs :: Period -> [Double] -> Maybe a
 rs period values =
     let aGain = averageGain period values
         aLoss = averageLoss period values
     in  (/) <$> aGain <*> aLoss
 
-roundToNearest :: (RealFrac a) => Int -> a -> a
-roundToNearest n x = fromIntegral (round (x * 10^n)) / 10^n
+-- roundToNearest :: (RealFrac a) => Int -> a -> a
+-- roundToNearest n x = fromIntegral (round (x * 10^n)) / 10^n
 
-rsi :: (RealFrac a, Ord a) => Period -> [a] -> Maybe a
+rsi :: Period -> [Double] -> Maybe Double
 rsi period values =
     let rsValue       = rs period values
     in case rsValue of
