@@ -25,4 +25,3 @@ spec = do
   describe "Stats" $ do
     it "should interval prices i.e various candle intervals" $ do
       pricesAtInterval 4 prices `shouldBe` (Just [6, 12, 12] :: Maybe [Double])
-

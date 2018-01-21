@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: d4a4492abdefbb64a5f8367b9d00347f8bc16c19ac6ff62052fd227735cf09b0
+-- hash: a021096a30e9f9535387e7a91725796195cc43879853ca735b8a2c9eeb97e777
 
 name:           crypto-bot-hs
 version:        0.1.0
@@ -32,6 +32,8 @@ library
   build-depends:
       base >=4.7 && <5
     , protolude >=0.2
+    , statistics-linreg >=0.3
+    , vector >=0.12
   exposed-modules:
       Lib
       TA.RSI
@@ -51,6 +53,8 @@ executable crypto-bot-hs-exe
       base >=4.7 && <5
     , crypto-bot-hs
     , protolude >=0.2
+    , statistics-linreg >=0.3
+    , vector >=0.12
   other-modules:
       Paths_crypto_bot_hs
   default-language: Haskell2010
@@ -68,6 +72,8 @@ test-suite crypto-bot-hs-test
     , crypto-bot-hs
     , hspec
     , protolude >=0.2
+    , statistics-linreg >=0.3
+    , vector >=0.12
   other-modules:
       Paths_crypto_bot_hs
   default-language: Haskell2010
