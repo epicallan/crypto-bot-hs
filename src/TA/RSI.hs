@@ -1,65 +1,85 @@
 
 module TA.RSI (
-        averageGain
+        firstAverage
+    ,   diffs
+    ,   rsi
+    ,   roundToNearest
+    ,   averageGain
     ,   averageLoss
-    ,   firstAverage
-    ,   pairDiffs
-    ,   foldAverages
     ,   AverageType(..)
     ) where
-
 import           Data.Maybe
 import           Protolude
 
 
 type Period = Int
 data AverageType = Gain | Loss deriving (Ord, Eq, Show)
+type Diffs a = Maybe [a]
 
-pairUp :: Num a => [a] -> Maybe [(a,a)]
-pairUp []        = Just []
-pairUp [x]       = Nothing
-pairUp (x:x':xs) =  (:) <$> Just (x,x') <*> pairUp xs
+diffs :: Num a => [a] -> Diffs a
+diffs []        = Just []
+diffs [_]       = Just []
+diffs (x:x':xs) = (:) <$> Just (x' - x) <*> diffs (x' : xs)
 
+diffsByType :: (RealFrac a, Ord a) => AverageType -> Diffs a -> Diffs a
+diffsByType avType changes =
+    case changes of
+        Just xs -> Just $ diffByType avType  <$> xs
+        Nothing -> Nothing
+    where
+        diffByType :: (RealFrac a, Ord a) => AverageType -> a -> a
+        diffByType avType' change
+            | avType' == Gain && change > 0 = change
+            | avType' == Loss && change < 0 = change * (- 1)
+            | otherwise = 0
 
-pairDiff :: (Fractional a, Ord a)  => AverageType -> (a, a) -> a
-pairDiff avType (x, y)
-    | avType == Gain && diff' > 0 = diff'
-    | avType == Loss && diff' < 0 = diff' * (- 1)
-    | otherwise = 0
-    where diff' = y - x
-
-pairDiffs :: (Fractional a, Ord a) => AverageType -> Maybe [(a, a)] -> Maybe [a]
-pairDiffs avType pairs = case pairs of
-    Just xs -> Just $ fmap (pairDiff avType) xs
-    Nothing -> Nothing
 
 -- for getting first averages & losses
-firstAverage :: (Fractional a, Ord a) => AverageType -> Period -> Maybe [(a, a)] -> Maybe a
-firstAverage avType period pairs = div'' <$> diffsTotal
+firstAverage ::(RealFrac a) => AverageType -> Period -> [a] -> Maybe a
+firstAverage avType period prices = div'' <$> diffsTotal
     where
         div'' = flip (/) $ fromIntegral period
          -- we only want to deal with a few pairs. 7 pairs will lead to more than 7 diffs
-        diffs = pairDiffs avType $ fmap (take period) pairs
+        changes = diffsByType avType $ diffs prices
         -- ultimately we want to take from the diffs themeselves
-        diffsTotal = sum . take period <$> diffs
+        diffsTotal = sum . take period <$> changes
 
 
 
-foldAverages :: (Fractional a, Ord a) => AverageType -> Period -> a ->[(a, a)] -> a
-foldAverages avType period =
-    foldr(\pair acc -> let currentDiff = pairDiff avType pair
-                        in (acc * 13 + currentDiff) / fromIntegral period)
+foldAverages :: (RealFrac a, Ord a) => Period -> a -> [a] -> a
+foldAverages period = foldr' (\change acc -> (acc * (period' - 1) + change) / period')
+        where period' = fromIntegral period
 
-aggregateAverages :: (Fractional a, Ord a) => AverageType -> Period -> [a] -> Maybe a
+
+aggregateAverages :: (RealFrac a, Ord a) => AverageType -> Period -> [a] -> Maybe a
 aggregateAverages avType period values =
-    let allPairs = pairUp values
-        initialAverage = firstAverage avType period allPairs
+    let initialAverage = firstAverage avType period values
+        allDiffs       = diffs values
+        allGains       = diffsByType avType allDiffs
+        priceDiffs     = drop period  <$> allGains
     in case initialAverage of
-        Just avg -> foldAverages avType period avg <$> allPairs
+        Just avg -> foldAverages period avg . reverse <$> priceDiffs
         Nothing  -> Nothing
 
-averageGain :: (Fractional a, Ord a) => Period -> [a] -> Maybe a
+averageGain :: (RealFrac a, Ord a) => Period -> [a] -> Maybe a
 averageGain = aggregateAverages Gain
 
-averageLoss :: (Fractional a, Ord a) => Period -> [a] -> Maybe a
+averageLoss :: (RealFrac a, Ord a) => Period -> [a] -> Maybe a
 averageLoss = aggregateAverages Loss
+
+rs :: (RealFrac a, Ord a) => Period -> [a] -> Maybe a
+rs period values =
+    let aGain = averageGain period values
+        aLoss = averageLoss period values
+    in  (/) <$> aGain <*> aLoss
+
+roundToNearest :: (RealFrac a) => Int -> a -> a
+roundToNearest n x = fromIntegral (round (x * 10^n)) / 100
+
+rsi :: (RealFrac a, Ord a) => Period -> [a] -> Maybe a
+rsi period values =
+    let rsValue       = rs period values
+    in case rsValue of
+       Just x  -> Just $ roundToNearest 2 $ 100 - (100 / (1 + x))
+       Nothing -> Nothing
+
