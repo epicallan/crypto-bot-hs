@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e628e964b5312fee8b9607e07fddc2e1f521069bc388d06e4fff9aa1ff1f056f
+-- hash: c14f64442eaaf3e510d4b3787a3188a03d2ea28b40d3e37f7271179f577b492b
 
 name:           crypto-bot-hs
 version:        0.1.0
@@ -37,6 +37,7 @@ library
   exposed-modules:
       TA.RSI
       Utils.Alert
+      Utils.DB
       Utils.Stats
   other-modules:
       Paths_crypto_bot_hs

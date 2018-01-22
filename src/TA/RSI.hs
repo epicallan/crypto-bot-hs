@@ -3,7 +3,6 @@ module TA.RSI (
         firstAverage
     ,   diffs
     ,   rsi
-    ,   roundToNearest
     ,   averageGain
     ,   averageLoss
     ,   AverageType(..)
@@ -67,14 +66,11 @@ averageGain = aggregateAverages Gain
 averageLoss :: Period -> [Double] -> Maybe Double
 averageLoss = aggregateAverages Loss
 
-rs :: Period -> [Double] -> Maybe a
+rs :: Period -> [Double] -> Maybe Double
 rs period values =
     let aGain = averageGain period values
         aLoss = averageLoss period values
     in  (/) <$> aGain <*> aLoss
-
--- roundToNearest :: (RealFrac a) => Int -> a -> a
--- roundToNearest n x = fromIntegral (round (x * 10^n)) / 10^n
 
 rsi :: Period -> [Double] -> Maybe Double
 rsi period values =
