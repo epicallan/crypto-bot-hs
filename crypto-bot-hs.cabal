@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c14f64442eaaf3e510d4b3787a3188a03d2ea28b40d3e37f7271179f577b492b
+-- hash: 3b50578684122c5e9abf2637cdeedb7eebf4fda4c596cd47f53944fda1434338
 
 name:           crypto-bot-hs
 version:        0.1.0
@@ -31,8 +31,11 @@ library
   default-extensions: OverloadedStrings NoImplicitPrelude
   build-depends:
       base >=4.7 && <5
+    , dates >=0.2
+    , mongoDB >=2.3
     , protolude >=0.2
     , statistics-linreg >=0.3
+    , time >=1.8
     , vector >=0.12
   exposed-modules:
       TA.RSI
@@ -52,8 +55,11 @@ executable crypto-bot-hs-exe
   build-depends:
       base >=4.7 && <5
     , crypto-bot-hs
+    , dates >=0.2
+    , mongoDB >=2.3
     , protolude >=0.2
     , statistics-linreg >=0.3
+    , time >=1.8
     , vector >=0.12
   other-modules:
       Paths_crypto_bot_hs
@@ -70,9 +76,12 @@ test-suite crypto-bot-hs-test
       QuickCheck
     , base >=4.7 && <5
     , crypto-bot-hs
+    , dates >=0.2
     , hspec
+    , mongoDB >=2.3
     , protolude >=0.2
     , statistics-linreg >=0.3
+    , time >=1.8
     , vector >=0.12
   other-modules:
       Paths_crypto_bot_hs

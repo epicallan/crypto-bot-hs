@@ -35,9 +35,9 @@ mean' x = sum x / fromIntegral (length x)
 
 std' :: [Double] -> Double
 std' x =
-    let μ       = mean' x -- 4.25
-        length' = fromIntegral (length x) -- 4
-        var     = foldr(\c acc -> (μ - c)**2 + acc) 0 x -- 0.25 - 1.75 - 0.75 2.25
+    let μ       = mean' x
+        length' = fromIntegral (length x)
+        var     = foldr(\c acc -> (μ - c)**2 + acc) 0 x
     in sqrt (var / length')
 
 
