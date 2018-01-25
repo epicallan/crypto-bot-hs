@@ -29,6 +29,7 @@ dependencies:
 - mongoDB >= 2.3
 - time >= 1.8
 - dates >= 0.2
+- text >= 1.2
 
 library:
   source-dirs: src

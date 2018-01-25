@@ -2,7 +2,6 @@ module Utils.Stats (
         pricesAtInterval
     ,   baseStats
     ,   roundToNearest
-    ,   BasicStats(..)
 ) where
 
 import qualified Data.List                   as L
@@ -10,13 +9,7 @@ import           Data.Maybe
 import qualified Data.Vector.Unboxed         as U
 import           Protolude
 import           Statistics.LinearRegression
-
-data BasicStats = BasicStats {
-        mean    :: Double
-    ,   std     :: Double
-    ,   slope   :: Double
-    ,   current :: Double
-} deriving (Show)
+import           Types                       (BasicStats (..))
 
 -- i wonder if this could be written with foldable fns
 intervalPrices :: Num a  => Int -> [a] -> [[a]]
