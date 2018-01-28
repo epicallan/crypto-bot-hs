@@ -10,7 +10,7 @@ import qualified Data.Text          as T
 import           Data.Time.Calendar
 import           Data.Time.Clock
 import           Database.MongoDB
-import           Protolude
+import           Protolude          hiding (find)
 import qualified Text.Parsec        as P
 import           Types              (BasicStats (..), DipState (..))
 
@@ -30,7 +30,6 @@ instance Val (ValDate, ValDate) where
     val (x, y) = String $ showValDate x <> ","
      <> showValDate y
     cast' (String x )= parseValDates (T.unpack x)
-
 
 showValDate :: ValDate -> Text
 showValDate (ValDate d) =
@@ -90,8 +89,8 @@ getDateRange = (\currentDate -> (currentDate, newDate currentDate)) <$> getDate
         newDate now =  addInterval now (Days 7)
 
 
-addRecord :: DipState -> Action IO Value
-addRecord dip = do
+addCoinDipRecord :: DipState -> Action IO Value
+addCoinDipRecord dip = do
     range <- liftIO getDateRange
     insert dipCol (fields range)
     where
@@ -101,9 +100,28 @@ addRecord dip = do
                 "coinName" =: coinName dip
             ,   "mean" =: mean stats'
             ,   "std" =: std stats'
-            ,   "date range" =: toValDate range'
+            ,   "slop" =: slope stats'
+            ,   "current" =: current stats'
+            ,   "date-range" =: toValDate range'
             ]
 
--- getRecord :: Action IO Value
+getRecordByRange :: Text -> Action IO [Document]
+getRecordByRange range = rest =<< find (select ["date-range" =: range] dipCol)
 
--- getWeeksRecords :: Action IO Value
+getDateRange' :: Document -> Maybe (DateTime, DateTime)
+getDateRange' doc =
+    let xd = lookup "date-range" doc
+    in case xd of
+        Just (ValDate x, ValDate y) -> Just (x, y)
+        Nothing                     -> Nothing
+
+
+dipFromDB :: Document -> Maybe DipState
+dipFromDB doc =
+    let coinName' = fromMaybe "missing name" $ lookup "coinName" doc
+        current'  = lookup "current" doc :: Maybe Double
+        slope'    =  lookup "slop" doc :: Maybe Double
+        mean'     = lookup "mean" doc :: Maybe Double
+        std'      =  lookup "std" doc :: Maybe Double
+        baseStats = BasicStats <$> mean' <*> std' <*> current' <*> slope'
+    in DipState coinName' <$> baseStats
