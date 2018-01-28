@@ -13,7 +13,7 @@ data BasicStats = BasicStats {
     ,   current :: Double
 } deriving (Show)
 
-data DipState = DipStats {
+data DipState = DipState {
         coinName :: Text
     ,   stats    :: BasicStats
 } deriving(Show)
