@@ -100,7 +100,7 @@ addCoinDipRecord dip = do
                 "coinName" =: coinName dip
             ,   "mean" =: mean stats'
             ,   "std" =: std stats'
-            ,   "slop" =: slope stats'
+            ,   "slope" =: slope stats'
             ,   "current" =: current stats'
             ,   "date-range" =: toValDate range'
             ]
@@ -118,10 +118,10 @@ getDateRange' doc =
 
 dipFromDB :: Document -> Maybe DipState
 dipFromDB doc =
-    let coinName' = fromMaybe "missing name" $ lookup "coinName" doc
+    let coinName' = lookup "coinName" doc
         current'  = lookup "current" doc :: Maybe Double
-        slope'    =  lookup "slop" doc :: Maybe Double
+        slope'    = lookup "slop" doc :: Maybe Double
         mean'     = lookup "mean" doc :: Maybe Double
-        std'      =  lookup "std" doc :: Maybe Double
-        baseStats = BasicStats <$> mean' <*> std' <*> current' <*> slope'
-    in DipState coinName' <$> baseStats
+        std'      = lookup "std" doc :: Maybe Double
+        baseStats = BasicStats <$> mean' <*> std' <*> slope' <*> current'
+    in DipState <$> coinName' <*> baseStats
