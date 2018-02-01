@@ -28,9 +28,14 @@ dependencies:
 - vector >= 0.12
 - mongoDB >= 2.3
 - time >= 1.8
+- http-conduit >= 2.2.4
 - dates >= 0.2
 - text >= 1.2
 - parsec >= 3.1
+- wreq >= 0.5
+- microlens >= 0.4.8
+- microlens-aeson >= 2.2
+- aeson >= 1.2.3
 
 library:
   source-dirs: src

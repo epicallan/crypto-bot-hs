@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: bd3954024da66f8a985883e4642e0bce55248160a88ac34ce9722279c7f74c65
+-- hash: 14e4decf07571b9347b59d459d317d12ed69b63414ecbed5b367c44af177ed25
 
 name:           crypto-bot-hs
 version:        0.1.0
@@ -30,8 +30,12 @@ library
       src
   default-extensions: OverloadedStrings NoImplicitPrelude
   build-depends:
-      base >=4.7 && <5
+      aeson >=1.2.3
+    , base >=4.7 && <5
     , dates >=0.2
+    , http-conduit >=2.2.4
+    , microlens >=0.4.8
+    , microlens-aeson >=2.2
     , mongoDB >=2.3
     , parsec >=3.1
     , protolude >=0.2
@@ -39,7 +43,12 @@ library
     , text >=1.2
     , time >=1.8
     , vector >=0.12
+    , wreq >=0.5
   exposed-modules:
+      Bittrex.API
+      Bittrex.Internal
+      Bittrex.Types
+      Dip
       TA.RSI
       Types
       Utils.Alert
@@ -56,9 +65,13 @@ executable crypto-bot-hs-exe
   default-extensions: OverloadedStrings NoImplicitPrelude
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      aeson >=1.2.3
+    , base >=4.7 && <5
     , crypto-bot-hs
     , dates >=0.2
+    , http-conduit >=2.2.4
+    , microlens >=0.4.8
+    , microlens-aeson >=2.2
     , mongoDB >=2.3
     , parsec >=3.1
     , protolude >=0.2
@@ -66,6 +79,7 @@ executable crypto-bot-hs-exe
     , text >=1.2
     , time >=1.8
     , vector >=0.12
+    , wreq >=0.5
   other-modules:
       Paths_crypto_bot_hs
   default-language: Haskell2010
@@ -79,10 +93,14 @@ test-suite crypto-bot-hs-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       QuickCheck
+    , aeson >=1.2.3
     , base >=4.7 && <5
     , crypto-bot-hs
     , dates >=0.2
     , hspec
+    , http-conduit >=2.2.4
+    , microlens >=0.4.8
+    , microlens-aeson >=2.2
     , mongoDB >=2.3
     , parsec >=3.1
     , protolude >=0.2
@@ -90,6 +108,7 @@ test-suite crypto-bot-hs-test
     , text >=1.2
     , time >=1.8
     , vector >=0.12
+    , wreq >=0.5
   other-modules:
       Paths_crypto_bot_hs
   default-language: Haskell2010

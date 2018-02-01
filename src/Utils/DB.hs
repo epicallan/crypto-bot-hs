@@ -2,7 +2,13 @@
 {-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-module Utils.DB where
+module Utils.DB (
+        getRecordsByDateRange
+    ,   addCoinDipRecord
+    ,   dipFromDB
+    ,   createDateRange
+    ,   getDateRange
+) where
 import           Data.Dates
 import           Data.Maybe
 import qualified Data.String        as S (String, fromString)
@@ -14,7 +20,7 @@ import           Protolude          hiding (find)
 import qualified Text.Parsec        as P
 import           Types              (BasicStats (..), DipState (..))
 
--- | This module has db methods we use to save the script results in a db
+-- | This module has db methods we use to save the crypto script results in a db and retrieving it
 
 cryptoDB :: Database
 cryptoDB = "crypto"
@@ -27,8 +33,7 @@ type Coin = Text
 newtype ValDate = ValDate DateTime deriving (Eq, Show) -- for making dateTime an instance of Val
 
 instance Val (ValDate, ValDate) where
-    val (x, y) = String $ showValDate x <> ","
-     <> showValDate y
+    val (x, y) = String $ showValDate x <> "," <> showValDate y
     cast' (String x )= parseValDates (T.unpack x)
 
 showValDate :: ValDate -> Text
@@ -82,8 +87,8 @@ getDate =  (toDate .toGregorian . utctDay) <$> getCurrentTime
         toDate (year', month', day') = DateTime (fromIntegral year') month' day' 0 0 0
 
 
-getDateRange :: IO (DateTime, DateTime) -- tuple of 2 dates
-getDateRange = (\currentDate -> (currentDate, newDate currentDate)) <$> getDate
+createDateRange :: IO (DateTime, DateTime) -- tuple of 2 dates
+createDateRange = (\currentDate -> (currentDate, newDate currentDate)) <$> getDate
     where
         newDate :: DateTime -> DateTime
         newDate now =  addInterval now (Days 7)
@@ -91,7 +96,7 @@ getDateRange = (\currentDate -> (currentDate, newDate currentDate)) <$> getDate
 
 addCoinDipRecord :: DipState -> Action IO Value
 addCoinDipRecord dip = do
-    range <- liftIO getDateRange
+    range <- liftIO createDateRange
     insert dipCol (fields range)
     where
         stats' = stats dip
@@ -105,11 +110,11 @@ addCoinDipRecord dip = do
             ,   "date-range" =: toValDate range'
             ]
 
-getRecordByRange :: Text -> Action IO [Document]
-getRecordByRange range = rest =<< find (select ["date-range" =: range] dipCol)
+getRecordsByDateRange :: Text -> Action IO [Document]
+getRecordsByDateRange range = rest =<< find (select ["date-range" =: range] dipCol)
 
-getDateRange' :: Document -> Maybe (DateTime, DateTime)
-getDateRange' doc =
+getDateRange :: Document -> Maybe (DateTime, DateTime)
+getDateRange doc =
     let xd = lookup "date-range" doc
     in case xd of
         Just (ValDate x, ValDate y) -> Just (x, y)
@@ -118,7 +123,7 @@ getDateRange' doc =
 
 dipFromDB :: Document -> Maybe DipState
 dipFromDB doc =
-    let coinName' = lookup "coinName" doc
+    let coinName' = lookup "coinName" doc :: Maybe Text
         current'  = lookup "current" doc :: Maybe Double
         slope'    = lookup "slop" doc :: Maybe Double
         mean'     = lookup "mean" doc :: Maybe Double
