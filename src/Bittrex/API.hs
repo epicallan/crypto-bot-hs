@@ -25,7 +25,7 @@ getCandles :: MarketName -> TickInterval -> IO (Either ErrorMessage [Candle])
 getCandles market interval =
     callAPI (
         defOpts {
-                    apiOptsVersion = "v2"
+                    apiOptsVersion = "v2.0"
                 ,   apiOptsQueryParams = [("market", market), ("tickInterval", show interval)]
             }
     )
