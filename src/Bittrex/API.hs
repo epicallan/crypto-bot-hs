@@ -20,8 +20,8 @@ getMarketSummary market =
     )
 
 -- | This function returns historical & current coin candles by specified interval
-getCandles :: MarketName -> TickInterval -> IO (Either ErrorMessage [Candle])
-getCandles market interval =
+getCandles :: TickInterval -> MarketName -> IO (Either ErrorMessage [Candle])
+getCandles interval market =
     callAPI (
         defOpts {
                     apiOptsVersion = "v2.0"
