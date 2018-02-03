@@ -8,11 +8,13 @@ module Bittrex.Types where
 --------------------------------------------------------------------------------
 
 import           Data.Aeson
-import qualified Data.String  as S
-import           Data.Text    (Text)
-import qualified Data.Text    as Text
+import qualified Data.Aeson.Types as Aeson
+import           Data.String      (String)
+import           Data.Text        (Text)
+import qualified Data.Text        as Text
 import           Data.Time
-import           GHC.Generics (Generic)
+import           GHC.Generics     (Generic)
+import           GHC.Show
 import           Protolude
 
 --------------------------------------------------------------------------------
@@ -28,22 +30,35 @@ newtype Time
 instance FromJSON Time where
   parseJSON = withText "Time" $ \t -> pure (Time (parse (Text.unpack t)))
     where
-      parse :: S.String -> UTCTime
+      parse :: String -> UTCTime
       parse = parseTimeOrError True defaultTimeLocale
               $ iso8601DateFormat (Just "%H:%M:%S%Q")
 
+data APIType
+  = PublicAPI
+  | AccountAPI
+  | MarketAPI
+  deriving (Eq)
+
+instance Show APIType where
+  show AccountAPI = "account"
+  show PublicAPI  = "public"
+  show MarketAPI  = "market"
+
 data APIOpts
   = APIOpts
-    {
-      apiOptsQueryParams :: Params
+    { apiOptsAPIType     :: APIType
+    , apiOptsQueryParams :: Params
     , apiOptsVersion     :: Text
     , apiOptsPath        :: Text
     }
   deriving (Eq, Show)
 
---------------------------------------------------------------------------------
+data ErrorMessage
+  = BittrexError BittrexError
+  | DecodeFailure Text Aeson.Value
+  deriving (Eq, Show, Generic)
 
-------------------------------------------------------------------------
 
 data BittrexError
   = INVALID_MARKET
