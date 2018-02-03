@@ -19,6 +19,8 @@ import           Protolude
 
 --------------------------------------------------------------------------------
 
+type MarketName = Text
+
 type Params = [(Text, Text)]
 
 --------------------------------------------------------------------------------
@@ -34,6 +36,19 @@ instance FromJSON Time where
       parse = parseTimeOrError True defaultTimeLocale
               $ iso8601DateFormat (Just "%H:%M:%S%Q")
 
+data TickInterval
+  = OneMin
+  | FiveMin
+  | ThirtyMin
+  | Hour
+  deriving (Eq)
+
+instance Show TickInterval where
+  show OneMin    = "oneMin"
+  show FiveMin   = "fiveMin"
+  show ThirtyMin = "thirtyMin"
+  show Hour      = "hour"
+
 data APIType
   = PublicAPI
   | AccountAPI
@@ -48,6 +63,7 @@ instance Show APIType where
 data APIOpts
   = APIOpts
     { apiOptsAPIType     :: APIType
+    , tickInterval       :: Maybe TickInterval
     , apiOptsQueryParams :: Params
     , apiOptsVersion     :: Text
     , apiOptsPath        :: Text
@@ -113,25 +129,37 @@ instance FromJSON Market where
 
 --------------------------------------------------------------------------------
 
-data Currency
-  = Currency
-    { currencyName            :: Text
-    , currencyNameLong        :: Text
-    , currencyMinConfirmation :: Int
-    , currencyIsActive        :: Bool
-    , currencyCoinType        :: Text
-    , currencyBaseAddress     :: Maybe Text
+---------------------------------------------------------------------
+data MarketSummary
+  = MarketSummary
+    { marketSummaryMarketName        :: MarketName
+    , marketSummaryHigh              :: Double
+    , marketSummaryLow               :: Double
+    , marketSummaryVolume            :: Double
+    , marketSummaryLast              :: Double
+    , marketSummaryBaseVolume        :: Double
+    , marketSummaryBid               :: Double
+    , marketSummaryAsk               :: Double
+    , marketSummaryOpenBuyOrders     :: Int
+    , marketSummaryOpenSellOrders    :: Int
+    , marketSummaryCreated           :: Time
+    , marketSummaryDisplayMarketName :: Maybe Text
     }
-  deriving (Eq, Show)
+  deriving (Eq, Show, Generic)
 
-instance FromJSON Currency where
-  parseJSON = withObject "Currency" $ \o -> do
-    currencyName            <- o .:  "Currency"
-    currencyNameLong        <- o .:  "CurrencyLong"
-    currencyMinConfirmation <- o .:  "MinConfirmation"
-    currencyIsActive        <- o .:  "IsActive"
-    currencyCoinType        <- o .:  "CoinType"
-    currencyBaseAddress     <- o .:? "BaseAddress"
-    pure Currency {..}
+instance FromJSON MarketSummary where
+  parseJSON = withObject "MarketSummary" $ \o -> do
+    marketSummaryMarketName        <- o .:  "MarketName"
+    marketSummaryHigh              <- o .:  "High"
+    marketSummaryLow               <- o .:  "Low"
+    marketSummaryVolume            <- o .:  "Volume"
+    marketSummaryLast              <- o .:  "Last"
+    marketSummaryBaseVolume        <- o .:  "BaseVolume"
+    marketSummaryBid               <- o .:  "Bid"
+    marketSummaryAsk               <- o .:  "Ask"
+    marketSummaryOpenBuyOrders     <- o .:  "OpenBuyOrders"
+    marketSummaryOpenSellOrders    <- o .:  "OpenSellOrders"
+    marketSummaryCreated           <- o .:  "Created"
+    marketSummaryDisplayMarketName <- o .:? "DisplayMarketName"
+    pure MarketSummary {..}
 
---------------------------------------------------------------------------------
