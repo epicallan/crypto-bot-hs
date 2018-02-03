@@ -2,7 +2,6 @@ module Bittrex.API where
 
 import           Bittrex.Internal (callAPI, defOpts)
 import           Bittrex.Types
-import           Data.Maybe
 import           Protolude
 
 
