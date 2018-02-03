@@ -63,7 +63,6 @@ instance Show APIType where
 data APIOpts
   = APIOpts
     { apiOptsAPIType     :: APIType
-    , tickInterval       :: Maybe TickInterval
     , apiOptsQueryParams :: Params
     , apiOptsVersion     :: Text
     , apiOptsPath        :: Text
@@ -163,3 +162,23 @@ instance FromJSON MarketSummary where
     marketSummaryDisplayMarketName <- o .:? "DisplayMarketName"
     pure MarketSummary {..}
 
+data Candle
+    = Candle
+      { open    :: Double
+      , high    :: Double
+      , low     :: Double
+      , current :: Double
+      , time    :: Time
+      , volume  :: Double
+      }
+    deriving (Eq, Show, Generic)
+
+instance FromJSON Candle where
+  parseJSON = withObject "Candle" $ \o -> do
+    open    <- o .: "O"
+    high    <- o .: "H"
+    low     <- o .: "L"
+    current <- o .: "C"
+    time    <- o .: "T"
+    volume  <- o .: "V"
+    pure Candle {..}

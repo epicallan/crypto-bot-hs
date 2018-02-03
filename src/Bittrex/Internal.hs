@@ -18,7 +18,7 @@ import           Protolude        hiding (get)
 type URL = String
 
 defOpts :: APIOpts
-defOpts = APIOpts PublicAPI Nothing [] "v1.1" mempty
+defOpts = APIOpts PublicAPI [] "v1.1" mempty
 
 makeBaseUrl :: APIOpts -> String
 makeBaseUrl APIOpts{..} =
@@ -33,10 +33,8 @@ urlWithParams APIOpts{..} url =
     [url, "?", mconcat (Text.unpack <$> params')] & mconcat & init
     where
         go (k, v) = k <> "=" <> v <> "&"
-        tickerInterval' :: TickInterval -> Params
-        tickerInterval' interval = pure ("tickInterval", Text.pack $ show interval)
         params':: [Text]
-        params' = go <$> apiOptsQueryParams <*> fromMaybe pure tickerInterval' tickInterval
+        params' = go <$> apiOptsQueryParams
 
 callAPI :: (FromJSON v) => APIOpts -> IO (Either ErrorMessage v)
 callAPI apiOpts = do
