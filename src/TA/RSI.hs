@@ -67,12 +67,15 @@ averageLoss :: Period -> [Double] -> Maybe Double
 averageLoss = aggregateAverages Loss
 
 rs :: Period -> [Double] -> Maybe Double
+rs _ []          = Nothing
 rs period values =
     let aGain = averageGain period values
         aLoss = averageLoss period values
     in  (/) <$> aGain <*> aLoss
 
+-- FIXME: need to return accumulated rsi values not just final value
 rsi :: Period -> [Double] -> Maybe Double
+rsi _ []          = Nothing
 rsi period values =
     let rsValue       = rs period values
     in case rsValue of

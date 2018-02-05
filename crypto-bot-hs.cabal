@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: a9c649ccc4cb892971904cfdc9f84c533fcd28326c7a4eca747e1f0ed327e015
+-- hash: 207557df8b4b64f8957d76528bf216c9dbe221f050f2b108fbfc5ce32a971efb
 
 name:           crypto-bot-hs
 version:        0.1.0
@@ -31,6 +31,7 @@ library
   default-extensions: OverloadedStrings NoImplicitPrelude
   build-depends:
       aeson >=1.2.3
+    , async >=2.1
     , base >=4.7 && <5
     , dates >=0.2
     , http-conduit >=2.2.4
@@ -67,6 +68,7 @@ executable crypto-bot-hs-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       aeson >=1.2.3
+    , async >=2.1
     , base >=4.7 && <5
     , crypto-bot-hs
     , dates >=0.2
@@ -96,6 +98,7 @@ test-suite crypto-bot-hs-test
   build-depends:
       QuickCheck
     , aeson >=1.2.3
+    , async >=2.1
     , base >=4.7 && <5
     , crypto-bot-hs
     , dates >=0.2

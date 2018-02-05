@@ -1,6 +1,7 @@
 module Main where
 
+import           Dip       (runAnalysis)
 import           Protolude
 
 main :: IO ()
-main = putStrLn ("some App" :: Text)
+main = runAnalysis

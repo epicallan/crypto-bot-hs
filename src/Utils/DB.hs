@@ -5,6 +5,7 @@
 module Utils.DB (
         getRecordsByDateRange
     ,   addCoinDipRecord
+    ,   runDb
     ,   dipFromDB
     ,   createDateRange
     ,   getDateRange
@@ -102,11 +103,11 @@ addCoinDipRecord dip = do
         stats' = stats dip
         toValDate (x, y) = (ValDate x, ValDate y)
         fields range' = [
-                "coinName" =: coinName dip
-            ,   "mean" =: mean stats'
-            ,   "std" =: std stats'
-            ,   "slope" =: slope stats'
-            ,   "current" =: current stats'
+                "coinName"   =: coinName dip
+            ,   "mean"       =: mean stats'
+            ,   "std"        =: std stats'
+            ,   "slope"      =: slope stats'
+            ,   "current"    =: current stats'
             ,   "date-range" =: toValDate range'
             ]
 

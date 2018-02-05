@@ -166,12 +166,12 @@ instance FromJSON MarketSummary where
 
 data Candle
     = Candle
-      { open    :: Double
-      , high    :: Double
-      , low     :: Double
-      , current :: Double
-      , time    :: Time
-      , volume  :: Double
+      { open   :: Double
+      , high   :: Double
+      , low    :: Double
+      , close  :: Double
+      , time   :: Time
+      , volume :: Double
       }
     deriving (Eq, Show, Generic)
 
@@ -180,7 +180,7 @@ instance FromJSON Candle where
     open    <- o .: "O"
     high    <- o .: "H"
     low     <- o .: "L"
-    current <- o .: "C"
+    close <- o .: "C"
     time    <- o .: "T"
     volume  <- o .: "V"
     pure Candle {..}
