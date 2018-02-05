@@ -45,6 +45,9 @@ btcAltCandles alt =  getBtcAltCandles `onException` pure Nothing
 
 
 -- |  Anlyse coin and write results to DB if below a certain RSI
+-- |  this analysis function is going to change, would prefer to compare with
+-- |  average rsi for say past 3 days
+
 analyse :: MarketName -> IO ()
 analyse alt = do
     candles <- btcAltCandles alt
