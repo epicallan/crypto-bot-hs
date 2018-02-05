@@ -22,10 +22,11 @@ pricesAtInterval i p =
     let priceGroups = intervalPrices i $ reverse p
     in traverse head $ reverse priceGroups
 
-
+-- FIXME: correct should return a maybe
 mean' :: [Double] -> Double
 mean' x = sum x / fromIntegral (length x)
 
+-- FIXME: correct should return a maybe
 std' :: [Double] -> Double
 std' x =
     let μ       = mean' x
@@ -34,7 +35,7 @@ std' x =
     in sqrt (var / length')
 
 
-
+-- FIXME: correct should return a maybe
 slope' :: [Double] -> Double
 slope' y =
     let length' = fromIntegral $ L.length y :: Double

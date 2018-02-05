@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 14e4decf07571b9347b59d459d317d12ed69b63414ecbed5b367c44af177ed25
+-- hash: a9c649ccc4cb892971904cfdc9f84c533fcd28326c7a4eca747e1f0ed327e015
 
 name:           crypto-bot-hs
 version:        0.1.0
@@ -39,6 +39,7 @@ library
     , mongoDB >=2.3
     , parsec >=3.1
     , protolude >=0.2
+    , safe-exceptions >=0.1.6
     , statistics-linreg >=0.3
     , text >=1.2
     , time >=1.8
@@ -75,6 +76,7 @@ executable crypto-bot-hs-exe
     , mongoDB >=2.3
     , parsec >=3.1
     , protolude >=0.2
+    , safe-exceptions >=0.1.6
     , statistics-linreg >=0.3
     , text >=1.2
     , time >=1.8
@@ -104,6 +106,7 @@ test-suite crypto-bot-hs-test
     , mongoDB >=2.3
     , parsec >=3.1
     , protolude >=0.2
+    , safe-exceptions >=0.1.6
     , statistics-linreg >=0.3
     , text >=1.2
     , time >=1.8

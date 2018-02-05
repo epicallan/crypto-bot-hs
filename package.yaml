@@ -36,6 +36,7 @@ dependencies:
 - microlens >= 0.4.8
 - microlens-aeson >= 2.2
 - aeson >= 1.2.3
+- safe-exceptions >= 0.1.6
 
 library:
   source-dirs: src

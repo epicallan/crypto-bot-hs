@@ -41,6 +41,7 @@ data TickInterval
   | FiveMin
   | ThirtyMin
   | Hour
+  | Day
   deriving (Eq)
 
 instance Show TickInterval where
@@ -48,6 +49,7 @@ instance Show TickInterval where
   show FiveMin   = "fiveMin"
   show ThirtyMin = "thirtyMin"
   show Hour      = "hour"
+  show Day       = "day"
 
 data APIType
   = PublicAPI
