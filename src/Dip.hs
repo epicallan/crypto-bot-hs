@@ -6,7 +6,7 @@ import           Control.Exception.Safe
 import           Data.Maybe
 import qualified Data.Text              as Text
 import           Protolude              hiding (onException)
-import           System.Exit
+import           System.Exit            (ExitCode (..), exitWith)
 import           TA.RSI
 
 -- | get coins that have dipped & are possibly in consolidation
