@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 207557df8b4b64f8957d76528bf216c9dbe221f050f2b108fbfc5ce32a971efb
+-- hash: 76be493ed591c015ff87dbaaeb1015efdaae20553fc1c4e3a750548019f5cb5b
 
 name:           crypto-bot-hs
 version:        0.1.0
@@ -33,7 +33,9 @@ library
       aeson >=1.2.3
     , async >=2.1
     , base >=4.7 && <5
+    , bytestring
     , dates >=0.2
+    , http-client
     , http-conduit >=2.2.4
     , microlens >=0.4.8
     , microlens-aeson >=2.2
@@ -70,8 +72,10 @@ executable crypto-bot-hs-exe
       aeson >=1.2.3
     , async >=2.1
     , base >=4.7 && <5
+    , bytestring
     , crypto-bot-hs
     , dates >=0.2
+    , http-client
     , http-conduit >=2.2.4
     , microlens >=0.4.8
     , microlens-aeson >=2.2
@@ -100,9 +104,11 @@ test-suite crypto-bot-hs-test
     , aeson >=1.2.3
     , async >=2.1
     , base >=4.7 && <5
+    , bytestring
     , crypto-bot-hs
     , dates >=0.2
     , hspec
+    , http-client
     , http-conduit >=2.2.4
     , microlens >=0.4.8
     , microlens-aeson >=2.2

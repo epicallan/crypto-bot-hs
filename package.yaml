@@ -36,6 +36,8 @@ dependencies:
 - microlens >= 0.4.8
 - microlens-aeson >= 2.2
 - aeson >= 1.2.3
+- http-client
+- bytestring
 - safe-exceptions >= 0.1.6
 - async >= 2.1
 

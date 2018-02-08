@@ -74,6 +74,7 @@ data APIOpts
 data ErrorMessage
   = BittrexError BittrexError
   | DecodeFailure Text Aeson.Value
+  | BittrexException Text
   deriving (Eq, Show, Generic)
 
 

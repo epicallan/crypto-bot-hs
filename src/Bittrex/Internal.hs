@@ -5,15 +5,19 @@ module Bittrex.Internal (
     ,   defOpts) where
 
 import           Bittrex.Types
+import           Control.Exception.Safe (catchAsync)
 import           Data.Aeson
+import qualified Data.ByteString.Char8  as BSC
+import qualified Data.ByteString.Lazy   as LBS
 import           Data.List
-import           Data.String      (String)
-import           Data.Text        (Text)
-import qualified Data.Text        as Text
+import           Data.String            (String)
+import           Data.Text              (Text)
+import qualified Data.Text              as Text
 import           Lens.Micro
 import           Lens.Micro.Aeson
-import           Network.Wreq
-import           Protolude        hiding (get)
+import           Network.HTTP.Client
+import qualified Network.Wreq           as Nw
+import           Protolude              hiding (get)
 
 type URL = String
 
@@ -40,15 +44,22 @@ callAPI :: (FromJSON v) => APIOpts -> IO (Either ErrorMessage v)
 callAPI apiOpts = do
     let baseUrl = makeBaseUrl apiOpts
     let fullUrl = urlWithParams apiOpts baseUrl
-    r <- get fullUrl
-    let Just (Bool success) = r ^? (responseBody . key "success")
-    let Just result = r ^? responseBody . key "result"
-    let Just msg = r ^? responseBody . key "message"
-    pure $ if success
-        then case fromJSON result of
-            Error s   -> Left (DecodeFailure (Text.pack s) result)
-            Success m -> Right m
-        else case fromJSON msg of
-            Error s   -> Left (DecodeFailure (Text.pack s) msg)
-            Success m -> Left (BittrexError m)
+    eR <- (Right <$> Nw.get fullUrl) `catchAsync` handler
+    case eR of
+        Left err -> return $ Left (BittrexException $ "API Error: " <>err)
+        Right r -> do
+            let Just (Bool success) = r ^? (Nw.responseBody . key "success")
+            let Just result = r ^? Nw.responseBody . key "result"
+            let Just msg = r ^? Nw.responseBody . key "message"
+            pure $ if success
+                then case fromJSON result of
+                    Error s   -> Left (DecodeFailure (Text.pack s) result)
+                    Success m -> Right m
+                else case fromJSON msg of
+                    Error s   -> Left (DecodeFailure (Text.pack s) msg)
+                    Success m -> Left (BittrexError m)
+    where
+        handler :: HttpException -> IO (Either Text (Response LBS.ByteString))
+        handler (HttpExceptionRequest _ (StatusCodeException  r _)) =
+            return $ Left $ Text.pack $ BSC.unpack (r ^. Nw.responseStatus . Nw.statusMessage)
 

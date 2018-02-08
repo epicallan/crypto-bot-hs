@@ -5,7 +5,7 @@ import           Bittrex.Types
 import           Control.Concurrent.Async
 import           Control.Exception.Safe
 import           Data.Maybe
-import qualified Data.Text                as Text
+-- import qualified Data.Text                as Text
 import           Protolude                hiding (onException)
 import           System.Exit              (ExitCode (..), exitWith)
 import           TA.RSI                   (rsi)
@@ -17,7 +17,7 @@ import           Utils.Stats              (baseStats)
 
 -- | get actvie btc based altcoins
 btcAlts :: IO (Maybe [Market])
-btcAlts = getCoins `onException` exitWith (ExitFailure 500)
+btcAlts = getCoins
     where
         getCoins = do
             eMarkets <- getMarkets
@@ -29,17 +29,17 @@ btcAlts = getCoins `onException` exitWith (ExitFailure 500)
 
 -- | get candles for a coin above a certain btc volume
 btcAltCandles :: MarketName -> IO (Maybe[Candle])
-btcAltCandles alt =  getBtcAltCandles `onException` pure Nothing
+btcAltCandles alt =  getBtcAltCandles
     where
         getBtcAltCandles = do
             (eSummary, eCandles) <- concurrently (getMarketSummary alt) (getCandles Day alt)
             case eSummary of
-                Left err      -> print err >> pure Nothing
+                Left err      -> print ("summary error: " ++ show err) >> pure Nothing
                 Right summary' -> do
                     let summary = head summary'
                     let isAboveVolumeCap = maybe False (\x -> marketSummaryBaseVolume x > 80) summary
                     case eCandles of
-                        Left err -> print err >> pure Nothing
+                        Left err -> print ("candles error: " ++ show err) >> pure Nothing
                         Right candles ->
                             if isAboveVolumeCap then pure $ Just candles else pure Nothing
 
