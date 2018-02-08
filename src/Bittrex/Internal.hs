@@ -60,6 +60,7 @@ callAPI apiOpts = do
                     Success m -> Left (BittrexError m)
     where
         handler :: HttpException -> IO (Either Text (Response LBS.ByteString))
-        handler (HttpExceptionRequest _ (StatusCodeException  r _)) =
-            return $ Left $ Text.pack $ BSC.unpack (r ^. Nw.responseStatus . Nw.statusMessage)
+        handler (HttpExceptionRequest rq (StatusCodeException  r _)) =
+            return $ Left $ Text.pack $
+                    show rq <>"\n"<> BSC.unpack (r ^. Nw.responseStatus . Nw.statusMessage)
 

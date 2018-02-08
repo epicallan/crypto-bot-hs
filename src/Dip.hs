@@ -3,11 +3,9 @@ module Dip (runAnalysis) where
 import           Bittrex.API
 import           Bittrex.Types
 import           Control.Concurrent.Async
-import           Control.Exception.Safe
 import           Data.Maybe
--- import qualified Data.Text                as Text
+import qualified Data.Text                as Text
 import           Protolude                hiding (onException)
-import           System.Exit              (ExitCode (..), exitWith)
 import           TA.RSI                   (rsi)
 import           Types
 import           Utils.DB                 (addCoinDipRecord, runDb)
@@ -55,7 +53,7 @@ analyse alt = do
     let rsi' = fromMaybe 0 $ rsi 14 closePrices :: Double
     let stats' = baseStats closePrices :: Maybe BasicStats
     case stats' of
-        Nothing -> pure ()
+        Nothing -> print $ "No results for: " <> Text.unpack alt >> pure ()
         Just stats'' -> do
             let dipState = DipState alt stats''
             when (rsi' < 45 && rsi' > 0) (void $ runDb (addCoinDipRecord dipState))
