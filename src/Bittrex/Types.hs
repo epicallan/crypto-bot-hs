@@ -53,14 +53,16 @@ instance Show TickInterval where
 
 data APIType
   = PublicAPI
+  | PublicAPIV2
   | AccountAPI
   | MarketAPI
   deriving (Eq)
 
 instance Show APIType where
-  show AccountAPI = "account"
-  show PublicAPI  = "public"
-  show MarketAPI  = "market"
+  show AccountAPI  = "account"
+  show PublicAPI   = "public"
+  show PublicAPIV2 = "pub"
+  show MarketAPI   = "market"
 
 data APIOpts
   = APIOpts
