@@ -17,5 +17,3 @@ data DipState = DipState {
     ,   stats    :: BasicStats
     ,   rsiValue :: Double
 } deriving(Show)
-
-
