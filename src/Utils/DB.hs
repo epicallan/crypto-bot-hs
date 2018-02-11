@@ -8,9 +8,9 @@ module Utils.DB (
 ) where
 import           Data.Dates
 import           Data.Maybe
-import qualified Data.String        as S (String, fromString)
 import qualified Data.Text          as T
 import           Data.Time.Calendar
+import           Data.String            (String)
 import           Data.Time.Clock
 import           Database.MongoDB
 import           Protolude          hiding (find)
@@ -25,13 +25,12 @@ cryptoDB = "crypto"
 dipCol :: Collection
 dipCol = "dip"
 
-type Coin = Text
-
 newtype ValDate = ValDate DateTime deriving (Eq, Show) -- for making dateTime an instance of Val
 
 instance Val (ValDate, ValDate) where
-    val (x, y) = String $ showValDate x <> "," <> showValDate y
-    cast' (String x )= parseValDates (T.unpack x)
+    val (x, y)          = String $ showValDate x <> "," <> showValDate y
+    cast' (String x )   = parseValDates (T.unpack x)
+    cast' _             = Nothing
 
 showValDate :: ValDate -> Text
 showValDate (ValDate d) =
@@ -40,7 +39,7 @@ showValDate (ValDate d) =
         date'  = show $ day d
     in T.pack (year' ++ "/" ++ month' ++ "/" ++ date')
 
-parseValDateStr :: P.Parsec S.String () ValDate
+parseValDateStr :: P.Parsec String () ValDate
 parseValDateStr = do
     (d, m) <- liftA2 (,) pDigits pDigits
     y <-  P.many P.digit
@@ -49,12 +48,12 @@ parseValDateStr = do
         value' = fromMaybe 0 . readMaybe
         pDigits = P.many P.digit <* P.space
 
-splitValDateStr:: P.Parsec S.String () (S.String, S.String)
+splitValDateStr:: P.Parsec String () (String, String)
 splitValDateStr= (,) <$> pDigitSpaces <*> (P.char ','  *> pDigitSpaces)
     where
         pDigitSpaces = P.many (P.digit <|> P.space)
 
-parseValDates :: S.String -> Maybe (ValDate, ValDate)
+parseValDates :: String -> Maybe (ValDate, ValDate)
 parseValDates dateStr =
     let eResult = parse splitValDateStr dateStr
         getMaybeD = either (const Nothing) Just

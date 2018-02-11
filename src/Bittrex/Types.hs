@@ -10,8 +10,8 @@ import           Data.Text        (Text)
 import qualified Data.Text        as Text
 import           Data.Time
 import           GHC.Generics     (Generic)
-import           GHC.Show
-import           Protolude
+import           GHC.Show 
+import           Protolude hiding  (show)
 
 --------------------------------------------------------------------------------
 
@@ -80,12 +80,19 @@ data BittrexError
   = INVALID_MARKET
   | MARKET_NOT_PROVIDED
   | ADDRESS_GENERATING
+  | SOME_ERROR Text
   deriving (Eq, Show, Generic)
+
+getSomeError :: Show a => a -> BittrexError
+getSomeError = SOME_ERROR . Text.pack . show
 
 instance FromJSON BittrexError where
   parseJSON (String "INVALID_MARKET")      = pure INVALID_MARKET
   parseJSON (String "MARKET_NOT_PROVIDED") = pure MARKET_NOT_PROVIDED
   parseJSON (String "ADDRESS_GENERATING")  = pure ADDRESS_GENERATING
+  parseJSON (String p)                     = pure (SOME_ERROR p)
+  parseJSON _                              = pure (SOME_ERROR "some strange bittrex error")
+
 
 --------------------------------------------------------------------------------
 

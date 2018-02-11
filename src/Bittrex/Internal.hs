@@ -61,4 +61,7 @@ callAPI apiOpts = do
         handler (HttpExceptionRequest rq (StatusCodeException  r _)) =
             return $ Left $ Text.pack $
                     show rq <>"\n"<> BSC.unpack (r ^. Nw.responseStatus . Nw.statusMessage)
+        -- TODO: match all cases
+        handler (HttpExceptionRequest _ _) =  return $ Left "some http exception error"
+        handler (InvalidUrlException _ _) =  return $ Left "invalid url error"
 
