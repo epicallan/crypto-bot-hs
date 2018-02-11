@@ -44,8 +44,12 @@ slope' y =
         (_, beta) = linearRegression xs ys
     in beta
 
-roundToNearest :: Integer -> Double -> Double
-roundToNearest n x = fromIntegral (round (x * 10^n)) / 10^n
+roundToNearest :: Int -> Double -> Double
+roundToNearest n x = numerator' / 10^n
+    where
+        numerator' :: Double
+        numerator' = fromInteger (round (x * 10^n))
+
 
 baseStats :: [Double] -> Maybe BasicStats
 baseStats [] = Nothing
