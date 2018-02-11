@@ -89,7 +89,7 @@ createDateRange = (\currentDate -> (currentDate, newDate currentDate)) <$> getDa
         newDate :: DateTime -> DateTime
         newDate now =  addInterval now (Days 7)
 
-
+-- FIXME: add if exists fn so as to avoid duplicates
 addCoinDipRecord :: DipState -> Action IO Value
 addCoinDipRecord dip = do
     range <- liftIO createDateRange
@@ -99,10 +99,10 @@ addCoinDipRecord dip = do
         toValDate (x, y) = (ValDate x, ValDate y)
         fields range' = [
                 "coinName"   =: coinName dip
-            ,   "mean"       =: mean stats'
             ,   "std"        =: std stats'
+            ,   "change"     =: change stats'
             ,   "slope"      =: slope stats'
-            ,   "current"    =: current stats'
+            ,   "rsi"        =: rsiValue dip
             ,   "date-range" =: toValDate range'
             ]
 
@@ -120,9 +120,9 @@ getDateRange doc =
 dipFromDB :: Document -> Maybe DipState
 dipFromDB doc =
     let coinName' = lookup "coinName" doc :: Maybe Text
-        current'  = lookup "current" doc :: Maybe Double
-        slope'    = lookup "slop" doc :: Maybe Double
-        mean'     = lookup "mean" doc :: Maybe Double
+        rsi'      = lookup "rsi" doc :: Maybe Double
+        slope'    = lookup "slope" doc :: Maybe Double
+        change'   = lookup "change" doc :: Maybe Double
         std'      = lookup "std" doc :: Maybe Double
-        baseStats = BasicStats <$> mean' <*> std' <*> slope' <*> current'
-    in DipState <$> coinName' <*> baseStats
+        baseStats = BasicStats <$> slope' <*> change' <*> std'
+    in DipState <$> coinName' <*> baseStats <*> rsi'

@@ -48,6 +48,7 @@ btcAltCandles alt =  getBtcAltCandles
 
 analyse :: MarketName -> IO ()
 analyse alt = do
+    putStrLn $ "alt: " <> alt
     candles <- btcAltCandles alt
     let closePrices = maybe [] (fmap close) candles :: [Double]
     let rsi' = fromMaybe 0 $ rsi 14 closePrices :: Double
@@ -55,7 +56,9 @@ analyse alt = do
     case stats' of
         Nothing -> print $ "No results for: " <> Text.unpack alt >> pure ()
         Just stats'' -> do
-            let dipState = DipState alt stats''
+            print $ "ris': " ++ show rsi'
+            print $ "stats: '" ++ show stats'
+            let dipState = DipState alt stats'' rsi'
             when (rsi' < 45 && rsi' > 0) (void $ runDb (addCoinDipRecord dipState))
 
 
