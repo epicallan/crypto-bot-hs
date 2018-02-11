@@ -13,10 +13,6 @@ matrix:
   - env: ARGS="--resolver lts-10.3"
     compiler: ": #stack 8.2.2"
     addons: { apt: { packages: [libgmp-dev] } }
-  
-  - env: ARGS="--resolver nightly"
-    compiler: ": #stack nightly"
-    addons: { apt: { packages: [libgmp-dev] } }
 
 before_install:
 # Using compiler above sets CC to an invalid value, so unset it

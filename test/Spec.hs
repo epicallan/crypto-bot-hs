@@ -1,4 +1,3 @@
-import           Control.Exception (evaluate)
 import           Data.Maybe
 import           Protolude
 import           TA.RSI
