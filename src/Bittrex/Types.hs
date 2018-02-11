@@ -1,7 +1,3 @@
-{-# LANGUAGE DeriveGeneric   #-}
-{-# LANGUAGE RecordWildCards #-}
-
---------------------------------------------------------------------------------
 
 module Bittrex.Types where
 

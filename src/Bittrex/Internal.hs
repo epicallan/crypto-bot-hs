@@ -1,5 +1,3 @@
-{-# LANGUAGE RecordWildCards #-}
-
 module Bittrex.Internal (
         callAPI
     ,   defOpts) where

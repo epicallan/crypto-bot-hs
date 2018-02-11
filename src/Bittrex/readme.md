@@ -1,3 +1,3 @@
 There is a more comprehensive api [here](https://github.com/dmjio/bittrex)
 
-I am partially reimplementing it here for mainly learning purposes & feeling in a few missing gaps plus improvements where necessary
+I am partially reimplementing it here for mainly learning purposes, feeling in a few missing gaps & improvements where necessary / possible

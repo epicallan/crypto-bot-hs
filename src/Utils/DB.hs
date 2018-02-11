@@ -1,7 +1,3 @@
-{-# LANGUAGE ExtendedDefaultRules  #-}
-{-# LANGUAGE FlexibleContexts      #-}
-{-# LANGUAGE FlexibleInstances     #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
 module Utils.DB (
         getRecordsByDateRange
     ,   addCoinDipRecord

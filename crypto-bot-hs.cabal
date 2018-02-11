@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 76be493ed591c015ff87dbaaeb1015efdaae20553fc1c4e3a750548019f5cb5b
+-- hash: ef2a15c7235d91ab207e1ae6b3a93055d0ca2afb5f0a05e20b8150168a938c04
 
 name:           crypto-bot-hs
 version:        0.1.0
@@ -28,7 +28,7 @@ source-repository head
 library
   hs-source-dirs:
       src
-  default-extensions: OverloadedStrings NoImplicitPrelude
+  default-extensions: OverloadedStrings NoImplicitPrelude DeriveGeneric RecordWildCards ExtendedDefaultRules ExtendedDefaultRules FlexibleContexts FlexibleInstances MultiParamTypeClasses
   build-depends:
       aeson >=1.2.3
     , async >=2.1
@@ -66,7 +66,7 @@ executable crypto-bot-hs-exe
   main-is: Main.hs
   hs-source-dirs:
       app
-  default-extensions: OverloadedStrings NoImplicitPrelude
+  default-extensions: OverloadedStrings NoImplicitPrelude DeriveGeneric RecordWildCards ExtendedDefaultRules ExtendedDefaultRules FlexibleContexts FlexibleInstances MultiParamTypeClasses
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       aeson >=1.2.3
@@ -97,7 +97,7 @@ test-suite crypto-bot-hs-test
   main-is: Spec.hs
   hs-source-dirs:
       test
-  default-extensions: OverloadedStrings NoImplicitPrelude
+  default-extensions: OverloadedStrings NoImplicitPrelude DeriveGeneric RecordWildCards ExtendedDefaultRules ExtendedDefaultRules FlexibleContexts FlexibleInstances MultiParamTypeClasses
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       QuickCheck
