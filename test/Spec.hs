@@ -25,7 +25,7 @@ spec = do
     it "should interval prices i.e various candle intervals" $ do
       pricesAtInterval 4 prices `shouldBe` (Just [6, 12, 12] :: Maybe [Double])
     it "should compute percent price change" $ do
-      roundToNearest 2 <$> pricePercChange  prices `shouldBe` (Just 64.58 :: Maybe Double)
+      roundToNearest 2 <$> pricePercChange  prices `shouldBe` (Just 38.89 :: Maybe Double)
     it "should compute std deviation of prices" $ do
       roundToNearest 2 <$> std' prices `shouldBe` (Just 3.21 :: Maybe Double)
     it "should compute slope of prices" $ do

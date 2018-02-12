@@ -58,16 +58,17 @@ pricePercChange :: [Double] -> Maybe Double
 pricePercChange [] = Nothing
 pricePercChange x  =
     let maxPrice = maximum x -- maximum price for say past month
-        currentAvgPrice' = mean $ take 3 x -- avg price for past 3 days
+        currentAvgPrice' = mean $ reverse $ take 3 (reverse x)-- avg price for past 3 days
     in case currentAvgPrice' of
         Nothing              -> Nothing
         Just currentAvgPrice -> Just $ ((maxPrice - currentAvgPrice) / maxPrice) * 100
 
-
 baseStats :: [Double] -> Maybe BasicStats
 baseStats [] = Nothing
 baseStats x  =
-    let direction = roundToNearest 2 $ (* 1e5) $ fromMaybe 0 $ slope' (take 5 x)
-        std''     = roundToNearest 2 $ (* 1e5) $ fromMaybe 0 $ std' (take 7 x)
-        change'   = roundToNearest 2 $ fromMaybe 0  $ pricePercChange $ take 24 x
+    let x'            = reverse x
+        reverseTake y = reverse . take y -- i dont want to use drop
+        direction     = roundToNearest 2 $ (* 1e5) $ fromMaybe 0 $ slope' (reverseTake 5 x')
+        std''         = roundToNearest 2 $ (* 1e5) $ fromMaybe 0 $ std' (reverseTake 7 x')
+        change'       = roundToNearest 2 $ fromMaybe 0  $ pricePercChange $ reverseTake 24 x'
     in Just $ BasicStats direction change' std''

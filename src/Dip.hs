@@ -54,8 +54,8 @@ analyse alt = do
     case stats' of
         Nothing -> print $ "No results for: " <> Text.unpack alt >> pure ()
         Just stats'' -> do
-            print $ "ris': " ++ show rsi'
-            print $ "stats: '" ++ show stats'
+            print $ "ris: " ++ show rsi'
+            print $ "stats: " ++ show stats'
             let dipState = DipState alt stats'' rsi'
             let change'  = change stats''
             let slope'   = slope stats''
