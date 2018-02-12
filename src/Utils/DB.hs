@@ -39,7 +39,8 @@ showValDate (ValDate d) =
 
 parseValDateStr :: P.Parsec String () ValDate
 parseValDateStr = do
-    (d, m) <- liftA2 (,) pDigits pDigits
+    d <- pDigits
+    m <- pDigits
     y <-  P.many P.digit
     return $ ValDate $ DateTime (fromIntegral $ value' y) (value' m :: Int) (value' d :: Int) 0 0 0
     where
