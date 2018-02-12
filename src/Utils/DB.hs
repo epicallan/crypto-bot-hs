@@ -34,10 +34,8 @@ instance Val (ValDate, ValDate) where
 
 showValDate :: ValDate -> Text
 showValDate (ValDate d) =
-    let year'  = show $ year d
-        month' = show $ month d
-        date'  = show $ day d
-    in T.pack (year' ++ "/" ++ month' ++ "/" ++ date')
+    let date' = (\x -> show $ x d) <$> [year, month, day] 
+    in T.pack (date' & intercalate "/")
 
 parseValDateStr :: P.Parsec String () ValDate
 parseValDateStr = do

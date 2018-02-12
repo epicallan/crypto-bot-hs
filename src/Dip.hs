@@ -11,8 +11,6 @@ import           Types
 import           Utils.DB                 (addCoinDipRecord, runDb)
 import           Utils.Stats              (baseStats)
 
--- | get coins that have dipped & are possibly in consolidation
-
 -- | get actvie btc based altcoins
 btcAlts :: IO (Maybe [Market])
 btcAlts = getCoins
@@ -43,8 +41,8 @@ btcAltCandles alt =  getBtcAltCandles
 
 
 -- |  Anlyse coin and write results to DB if below a certain RSI
--- |  this analysis function is going to change, would prefer to compare with
--- |  average rsi for say past 3 days
+-- |  we want to get coins that have dipped hence we consider low RSI and
+-- |  are starting to recover hence we consider positive slope
 
 analyse :: MarketName -> IO ()
 analyse alt = do
@@ -59,7 +57,10 @@ analyse alt = do
             print $ "ris': " ++ show rsi'
             print $ "stats: '" ++ show stats'
             let dipState = DipState alt stats'' rsi'
-            when (rsi' < 45 && rsi' > 0) (void $ runDb (addCoinDipRecord dipState))
+            let change'  = change stats''
+            let slope'   = slope stats''
+            let hasDipped = rsi' < 45 && rsi' > 0 && change' > 40 && slope' > 0
+            when hasDipped (void $ runDb (addCoinDipRecord dipState))
 
 
 runAnalysis :: IO ()
