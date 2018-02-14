@@ -121,18 +121,13 @@ data Market
     , marketIsActive           :: Bool
     , marketCreated            :: Time
     }
-  deriving (Eq, Show)
+  deriving (Eq, Show, Generic)
+
+addMarketPrefix :: String -> String 
+addMarketPrefix label =  "market" ++ label
 
 instance FromJSON Market where
-  parseJSON = withObject "Market" $ \o -> do
-    marketMarketCurrency     <- o .: "MarketCurrency"
-    marketBaseCurrency       <- o .: "BaseCurrency"
-    marketMarketCurrencyLong <- o .: "MarketCurrencyLong"
-    marketBaseCurrencyLong   <- o .: "BaseCurrencyLong"
-    marketName               <- o .: "MarketName"
-    marketIsActive           <- o .: "IsActive"
-    marketCreated            <- o .: "Created"
-    pure Market {..}
+  parseJSON = genericParseJSON  $ defaultOptions { fieldLabelModifier = addMarketPrefix }
 
 --------------------------------------------------------------------------------
 
@@ -154,21 +149,12 @@ data MarketSummary
     }
   deriving (Eq, Show, Generic)
 
+
+addSummaryPrefix :: String -> String 
+addSummaryPrefix label =  "marketSummary" ++ label
+
 instance FromJSON MarketSummary where
-  parseJSON = withObject "MarketSummary" $ \o -> do
-    marketSummaryMarketName        <- o .:  "MarketName"
-    marketSummaryHigh              <- o .:  "High"
-    marketSummaryLow               <- o .:  "Low"
-    marketSummaryVolume            <- o .:  "Volume"
-    marketSummaryLast              <- o .:  "Last"
-    marketSummaryBaseVolume        <- o .:  "BaseVolume"
-    marketSummaryBid               <- o .:  "Bid"
-    marketSummaryAsk               <- o .:  "Ask"
-    marketSummaryOpenBuyOrders     <- o .:  "OpenBuyOrders"
-    marketSummaryOpenSellOrders    <- o .:  "OpenSellOrders"
-    marketSummaryCreated           <- o .:  "Created"
-    marketSummaryDisplayMarketName <- o .:? "DisplayMarketName"
-    pure MarketSummary {..}
+  parseJSON = genericParseJSON  $ defaultOptions { fieldLabelModifier = addSummaryPrefix }
 
 data Candle
     = Candle
@@ -183,10 +169,10 @@ data Candle
 
 instance FromJSON Candle where
   parseJSON = withObject "Candle" $ \o -> do
-    open    <- o .: "O"
-    high    <- o .: "H"
-    low     <- o .: "L"
-    close <- o .: "C"
-    time    <- o .: "T"
-    volume  <- o .: "V"
+    open    <- o  .: "O"
+    high    <- o  .: "H"
+    low     <- o  .: "L"
+    close   <- o  .: "C"
+    time    <- o  .: "T"
+    volume  <- o  .: "V"
     pure Candle {..}
